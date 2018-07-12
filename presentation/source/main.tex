@@ -1,0 +1,414 @@
+\documentclass[xcolor={dvipsnames}]{beamer}
+% \usepackage[dvipsnames]{xcolor}
+
+%
+% Choose how your presentation looks.
+%
+% For more themes, color themes and font themes, see:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+%
+\mode<presentation>
+{
+  \usetheme{default}      % or try Darmstadt, Madrid, Warsaw, ...
+  \usecolortheme{default} % or try albatross, beaver, crane, ...
+  \usefonttheme{default}  % or try serif, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+} 
+
+\usepackage[english]{babel}
+\usepackage{minted}
+\usepackage{listings}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{fontspec} 
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage{ulem}
+\usepackage{graphicx}
+
+\graphicspath{ {./images/} }
+
+\newcommand{\itemclass}{}
+\newcommand{\myitem}[1]{%
+  \renewcommand{\itemclass}{#1}\item%
+}
+\newcommand{\mylabel}{%
+\ifthenelse{\equal{\itemclass}{bad}}{\color{red}\textbullet}{%
+\ifthenelse{\equal{\itemclass}{good}}{\color{green}\textbullet}{%
+\ifthenelse{\equal{\itemclass}{neutral}}{\color{black}\textbullet}{}}}%
+}
+
+\usetikzlibrary{decorations.pathreplacing,calc,shapes,positioning,tikzmark}
+% Int, Long, Integer, Short, Byte, Float, Double, String, Runnable, Array,
+\lstdefinelanguage{Kotlin}{
+  keywords={package, as, as?, typealias, this, super, val, var, fun, for, null, true, false, is, in, throw, return, break, continue, object, if, try, else, while, do, when, class, interface, enum, object, companion, override, public, private, get, set, import, abstract, vararg, expect, actual, where, suspend, data, internal, dynamic, final, by, getOrModify, operator},
+  keywordstyle=\color{NavyBlue}\bfseries,
+  ndkeywords={@Deprecated, @JvmName, @JvmStatic, @JvmOverloads, @JvmField, @JvmSynthetic, Iterable, @optics},
+  ndkeywordstyle=\color{BurntOrange}\bfseries,
+  emph={println, return@, forEach, map, mapNotNull, first, filter, firstOrNull, lazy, delegate},
+  emphstyle={\color{OrangeRed}\FiraCode},
+  identifierstyle=\color{black}\FiraCode,
+  sensitive=true,
+  commentstyle=\color{gray}\FiraCode,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  stringstyle=\color{ForestGreen}\FiraCode,
+  morestring=[b]",
+  morestring=[s]{"""*}{*"""},
+}
+
+\makeatletter
+\def\verbatim@nolig@list{}
+\makeatother
+
+\title[Your Short Title]{Mutable the immutable - introduction to Optics}
+\author{Andrzej Ressel}
+% \institute{Where You're From}
+\date{12.07.2018}
+
+% \usecolortheme{beetle}
+
+
+% \setbeamercolor{normal text}{fg=white,bg=black!90}
+% \setbeamercolor{structure}{fg=white}
+
+% \setbeamercolor{alerted text}{fg=red!85!black}
+
+% \setbeamercolor{item projected}{use=item,fg=black,bg=item.fg!35}
+
+% \setbeamercolor*{palette primary}{use=structure,fg=structure.fg}
+% \setbeamercolor*{palette secondary}{use=structure,fg=structure.fg!95!black}
+% \setbeamercolor*{palette tertiary}{use=structure,fg=structure.fg!90!black}
+% \setbeamercolor*{palette quaternary}{use=structure,fg=structure.fg!95!black,bg=black!80}
+
+% \setbeamercolor*{framesubtitle}{fg=white}
+
+% \setbeamercolor*{block title}{parent=structure,bg=black!60}
+% \setbeamercolor*{block body}{fg=black,bg=black!10}
+% \setbeamercolor*{block title alerted}{parent=alerted text,bg=black!15}
+% \setbeamercolor*{block title example}{parent=example text,bg=black!15}
+
+\begin{document}
+
+\newfontfamily{\FiraCode}{FiraCode}[
+Extension = .ttf, 
+UprightFont = *-Regular,
+Contextuals={Alternate}
+]
+
+\lstset{language=Kotlin,
+                keywordstyle=\color{blue}\FiraCode,
+                stringstyle=\color{red}\FiraCode,
+                basicstyle=\fontsize{8}{10}\FiraCode,
+                commentstyle=\color{brown}\FiraCode,
+                breaklines=true,
+                escapechar=|,
+                showstringspaces=false,
+                moredelim=[is][\sout]{^}{^}
+                morecomment=[l][\color{magenta}]{\#}
+}
+
+\usemintedstyle{monokai}
+
+\newcommand{\kt}[1]{
+    \inputminted[fontsize=\scriptsize, 
+                   linenos,
+                   numbersep=8pt,
+                   breaklines,
+                   frame=lines,
+                   bgcolor=bg,
+                   framesep=3mm]{text}{#1}
+}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+    \begin{center}
+        \Huge .copy
+    \end{center}
+    \begin{center}
+        \Huge .mapIndexed
+    \end{center}
+    \begin{center}
+        \Huge .mapValues
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Basic example}
+    \lstinputlisting{basic_address.kt}
+\end{frame}
+
+\begin{frame}[fragile, t]{Advanced example}
+    \lstinputlisting{advanced_address_1.kt}
+\end{frame}
+
+\begin{frame}[fragile, t]{Advanced example}
+    \lstinputlisting{advanced_address_2.kt}
+\end{frame}
+
+\begin{frame}[fragile]
+    \lstinputlisting{first_optics_1.kt}
+\end{frame}
+
+\begin{frame}[fragile]
+    \lstinputlisting{first_optics_2.kt}
+\end{frame}
+
+\begin{frame}
+
+    \begin{center}
+        \Huge Optics
+    \end{center}
+
+\end{frame}
+
+
+\begin{frame}
+
+    \begin{center}
+        \Huge Lens<S,A>
+    \end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]{Definition}
+
+    \lstinputlisting{lens_constructor_simple.kt}
+
+\end{frame}
+
+\begin{frame}{Lens}
+
+    \lstinputlisting{lens_street_name.kt}
+
+\end{frame}
+
+\begin{frame}{A new challenger approaches}
+
+    \begin{center}
+        \Huge Either<A,B>
+    \end{center}
+
+\end{frame}
+
+\begin{frame}
+
+    \begin{center}
+        \Huge Optional<S,A>
+    \end{center}
+
+\end{frame}
+
+\begin{frame}{Optional}
+    
+    \lstinputlisting{optional_constructor_simple.kt}
+    
+\end{frame}
+
+\begin{frame}{Optional}
+    
+    \lstinputlisting{optional_example.kt}
+    
+\end{frame}
+
+\begin{frame}
+    \Large Optic1<A,B> + Optic2<B, C> = Optic3<A, C>
+\end{frame}
+
+\begin{frame}[fragile, t]{DSL}
+    \begin{lstlisting}[escapechar=!]
+Employee.company.addresses[n].street.name.modify(employee, String::toUpperCase)
+    \end{lstlisting}    
+\end{frame}
+
+\begin{frame}[fragile, t]{DSL}
+    \begin{lstlisting}[escapechar=!]
+!\tikzmark{a1}!Employee.company!\tikzmark{a2}! !\tikzmark{b1}!.addresses!\tikzmark{b2}! !\tikzmark{c1}![n]!\tikzmark{c2}! !\tikzmark{d1}!.street!\tikzmark{d2}! !\tikzmark{e1}!.name!\tikzmark{e2}! .modify(employee, String::toUpperCase)
+    \end{lstlisting}
+    
+    \begin{tikzpicture}[remember picture,overlay]
+
+    \draw[red, line width=0.2mm]
+      ([shift={(0pt,2ex)}]pic cs:a1) 
+        rectangle
+      ([shift={(0pt,-0.65ex)}]pic cs:a2);
+      
+    \draw[ForestGreen, line width=0.2mm]
+      ([shift={(0pt,2ex)}]pic cs:b1) 
+        rectangle 
+      ([shift={(0pt,-0.65ex)}]pic cs:b2);
+      
+    \draw[blue, line width=0.2mm]
+      ([shift={(0pt,2ex)}]pic cs:c1) 
+        rectangle 
+      ([shift={(0pt,-0.65ex)}]pic cs:c2);
+      
+     \draw[gray, line width=0.2mm]
+      ([shift={(0pt,2ex)}]pic cs:d1) 
+        rectangle 
+      ([shift={(0pt,-0.65ex)}]pic cs:d2);
+      
+     \draw[purple, line width=0.2mm]
+      ([shift={(0pt,2ex)}]pic cs:e1) 
+        rectangle 
+      ([shift={(0pt,-0.65ex)}]pic cs:e2);
+      
+    \end{tikzpicture}
+    
+    \pause
+    
+    \newenvironment{redenv}{\only{\setbeamercolor{local structure}{fg=red}}}{}
+    \newenvironment{greenenv}{\only{\setbeamercolor{local structure}{fg=ForestGreen}}}{}
+    \newenvironment{blueenv}{\only{\setbeamercolor{local structure}{fg=blue}}}{}
+    \newenvironment{grayenv}{\only{\setbeamercolor{local structure}{fg=gray}}}{}
+    \newenvironment{purpleenv}{\only{\setbeamercolor{local structure}{fg=purple}}}{}
+    
+    \begin{itemize}
+        \item<red@1->
+            \begin{lstlisting}
+val Employee.Companion.company: Lens<Employee, Company>
+            \end{lstlisting}
+
+        \pause
+
+        \item<green@1->
+            \begin{lstlisting}
+val <S> Lens<S, Company>.addresses: Lens<S, List<Address>>
+            \end{lstlisting}
+
+        \pause
+
+        \item<blue@1->
+            \begin{lstlisting}
+val <S, E> Lens<S, List<E>>.get(i: Int): Optional<S, E>
+            \end{lstlisting}            
+
+        \pause
+
+        \item<gray@1->
+            \begin{lstlisting}
+val <S> Optional<S, Address>.street: Optional<S, Street>
+            \end{lstlisting}            
+
+        \pause
+
+        \item<purple@1->
+            \begin{lstlisting}
+val <S> Optional<S, Street>.name: Optional<S, String>
+            \end{lstlisting}
+
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile, t]{DSL}
+    \begin{lstlisting}[escapechar=!]
+!\tikzmark{a1}!Employee.company!\tikzmark{a2}! !\tikzmark{b1}!.addresses!\tikzmark{b2}! !\tikzmark{c1}![n]!\tikzmark{c2}! !\tikzmark{d1}!.street!\tikzmark{d2}! !\tikzmark{e1}!.name!\tikzmark{e2}! .modify(employee, String::toUpperCase)
+    \end{lstlisting}
+    
+    \begin{tikzpicture}[remember picture,overlay]
+
+    \draw[red, line width=0.2mm]
+      ([shift={(0pt,2ex)}]pic cs:a1) 
+        rectangle
+      ([shift={(0pt,-0.65ex)}]pic cs:a2);
+      
+    \draw[ForestGreen, line width=0.2mm]
+      ([shift={(0pt,2ex)}]pic cs:b1) 
+        rectangle 
+      ([shift={(0pt,-0.65ex)}]pic cs:b2);
+      
+    \draw[blue, line width=0.2mm]
+      ([shift={(0pt,2ex)}]pic cs:c1) 
+        rectangle 
+      ([shift={(0pt,-0.65ex)}]pic cs:c2);
+      
+     \draw[gray, line width=0.2mm]
+      ([shift={(0pt,2ex)}]pic cs:d1) 
+        rectangle 
+      ([shift={(0pt,-0.65ex)}]pic cs:d2);
+      
+     \draw[purple, line width=0.2mm]
+      ([shift={(0pt,2ex)}]pic cs:e1) 
+        rectangle 
+      ([shift={(0pt,-0.65ex)}]pic cs:e2);
+      
+    \end{tikzpicture}
+    
+    \newenvironment{redenv}{\only{\setbeamercolor{local structure}{fg=red}}}{}
+    \newenvironment{greenenv}{\only{\setbeamercolor{local structure}{fg=ForestGreen}}}{}
+    \newenvironment{blueenv}{\only{\setbeamercolor{local structure}{fg=blue}}}{}
+    \newenvironment{grayenv}{\only{\setbeamercolor{local structure}{fg=gray}}}{}
+    \newenvironment{purpleenv}{\only{\setbeamercolor{local structure}{fg=purple}}}{}
+    
+    \begin{itemize}
+        \item<red@1->
+            \begin{lstlisting}
+^val Employee.Companion.company: Lens<Employee, Company>
+            \end{lstlisting}
+
+
+        \item<green@1->
+            \begin{lstlisting}
+^val <S> Lens<S, Company>.addresses: Lens<S, List<Address>>
+            \end{lstlisting}
+
+
+        \item<blue@1->
+            \begin{lstlisting}
+val <S, E> Lens<S, List<E>>.get(i: Int): Optional<S, E>
+            \end{lstlisting}            
+
+
+        \item<gray@1->
+            \begin{lstlisting}
+^val <S> Optional<S, Address>.street: Optional<S, Street>
+            \end{lstlisting}            
+
+
+        \item<purple@1->
+            \begin{lstlisting}
+^val <S> Optional<S, Street>.name: Optional<S, String>
+            \end{lstlisting}
+
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Annotation processor}
+    \lstinputlisting{annotation_processor.kt}
+\end{frame}
+
+\begin{frame}
+
+    \begin{center}
+        \includegraphics{arrow}
+    \end{center}
+
+    \begin{center}
+        \Huge{Λrrow}
+    \end{center}
+
+    \begin{center}
+        \Huge{arrow-kt.io}
+    \end{center}
+
+\end{frame}
+
+\begin{frame}
+
+    \begin{center}
+        \Huge{The end}
+    \end{center}
+
+    \begin{center}
+        \includegraphics[width=\linewidth,height=\textheight - 50pt,keepaspectratio]{qrcode}
+    \end{center}
+
+\end{frame}
+
+\end{document}
